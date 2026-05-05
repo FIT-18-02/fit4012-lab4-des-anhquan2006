@@ -55,47 +55,60 @@ cmake --build build
 ./build/des
 ```
 
+### Chạy test local
+
+```bash
+make test
+```
+
+Hoặc chạy script mẫu:
+
+```bash
+bash scripts/run_sample.sh
+```
+
 ## 3. Input / Đầu vào
-Chế độ (Mode): Nhập một số nguyên từ 1 đến 4 để chọn thuật toán (DES Enc/Dec, TripleDES Enc/Dec).
 
-Dữ liệu (Plaintext/Ciphertext): Nhập dưới dạng chuỗi bit nhị phân (chỉ gồm ký tự '0' và '1').
+Chương trình nhận dữ liệu đầu vào trực tiếp từ bàn phím (stdin) theo thứ tự:
+- **Mode:** Chọn 1 (DES Encrypt), 2 (DES Decrypt), 3 (3DES Encrypt), hoặc 4 (3DES Decrypt).
+- **Dữ liệu (Plaintext/Ciphertext):** Nhập dưới dạng chuỗi nhị phân (0 và 1). Chương trình hỗ trợ nhập chuỗi có độ dài bất kỳ (nhiều block).
+- **Khóa (Key):** Nhập chuỗi nhị phân 64-bit cho DES. Đối với TripleDES, nhập lần lượt 3 khóa K1, K2, K3 (mỗi khóa 64-bit).
 
-Khóa (Key): Nhập chuỗi bit nhị phân 64-bit (cho DES) hoặc ba chuỗi 64-bit (cho TripleDES).
-
-Số lượng block: Chương trình hỗ trợ nhập chuỗi có độ dài bất kỳ (multi-block).
 ## 4. Output / Đầu ra
-Kết quả cuối cùng: Một chuỗi nhị phân dài duy nhất đại diện cho kết quả mã hóa hoặc giải mã.
 
-Thông tin bổ sung: Chương trình in ra các khóa vòng (Round Keys) trong quá trình xử lý để hỗ trợ việc kiểm chứng từng bước của thuật toán.
+Kết quả được hiển thị trên màn hình (stdout):
+- **Ciphertext/Plaintext cuối cùng:** Hiển thị dưới dạng chuỗi nhị phân liên tục.
+- **Chi tiết các bước:** Chương trình in ra các Round Keys (khóa vòng) cho mỗi block để phục vụ việc kiểm tra và theo dõi quá trình mã hóa/giải mã.
+- **TripleDES:** Thực hiện đúng quy trình E-D-E (Encrypt-Decrypt-Encrypt).
 
-TripleDES: Đầu ra là kết quả của quy trình mã hóa/giải mã Triple-DES theo mô hình EDE (Encrypt-Decrypt-Encrypt).
 ## 5. Padding đang dùng
-Chương trình sử dụng cơ chế Zero Padding:
 
-Cơ chế: Nếu độ dài của chuỗi đầu vào không chia hết cho 64 bit, chương trình sẽ tự động thêm các ký tự '0' vào cuối block cuối cùng cho đến khi đủ 64 bit.
+Chương trình sử dụng cơ chế **Zero Padding**:
+- **Cơ chế:** Nếu độ dài plaintext không phải là bội số của 64, các bit `0` sẽ được thêm vào cuối block cuối cùng cho đến khi đủ 64 bit.
+- **Xử lý đa block:** Plaintext dài được chia thành các cụm 64 bit độc lập để xử lý lần lượt.
+- **Hạn chế:** Zero padding có thể gây nhầm lẫn nếu dữ liệu gốc vốn dĩ kết thúc bằng các bit 0 (không phân biệt được đâu là dữ liệu thật, đâu là padding).
+- **Lưu ý:** Đây là cách tiếp cận cơ bản trong học thuật. Trong thực tế, các chuẩn như PKCS#7 thường được ưu tiên sử dụng để đảm bảo tính toàn vẹn dữ liệu khi giải mã.
 
-Chia block: Sau khi padding, toàn bộ chuỗi được chia thành các khối 64-bit độc lập để xử lý tuần tự.
-
-Hạn chế: Zero Padding có thể gây nhầm lẫn nếu dữ liệu gốc ban đầu kết thúc bằng các bit 0. Đây là cơ chế đơn giản phục vụ mục đích học tập, không an toàn bằng các chuẩn như PKCS#7 trong thực tế.
 ## 6. Tests bắt buộc
-test_des_sample.sh: Kiểm tra với vector thử chuẩn.
 
-test_encrypt_decrypt_roundtrip.sh: Kiểm tra khả năng mã hóa rồi giải mã ngược lại.
+Repo này đã tạo sẵn **5 tên file test mẫu** để sinh viên điền nội dung:
 
-test_multiblock_padding.sh: Kiểm tra dữ liệu dài và cơ chế bù bit 0.
-
-test_tamper_negative.sh: Kiểm tra khi ciphertext bị thay đổi.
-
-test_wrong_key_negative.sh: Kiểm tra khi dùng sai khóa để giải mã.
+- `tests/test_des_sample.sh`
+- `tests/test_encrypt_decrypt_roundtrip.sh`
+- `tests/test_multiblock_padding.sh`
+- `tests/test_tamper_negative.sh`
+- `tests/test_wrong_key_negative.sh`
 
 Sinh viên phải tự hoàn thiện test và bổ sung minh chứng chạy.
 
 ## 7. Logs / Minh chứng
-Các tệp trong thư mục logs/ chứa:
 
-run_log.txt: Nhật ký chạy thử chương trình với các bộ dữ liệu khác nhau.
+Thư mục `logs/` dùng để nộp minh chứng, ví dụ:
+- ảnh chụp màn hình khi chạy chương trình
+- output của test
+- log thử đúng / sai key / tamper
+- log cho mã hóa nhiều block
 
-Ảnh chụp màn hình kết quả chạy trên terminal thành công.
 ## 8. Ethics & Safe use
 
 - Chỉ chạy và kiểm thử trên dữ liệu học tập hoặc dữ liệu giả lập.
@@ -114,6 +127,7 @@ Trước khi nộp, cần có:
 - `tests/` với ít nhất 5 test
 - có negative test cho `tamper` và `wrong key`
 - `logs/` có ít nhất 1 file minh chứng thật
+- không còn dòng placeholder dạng đánh dấu chưa hoàn thiện
 
 ## 10. Lưu ý về CI
 
@@ -122,17 +136,23 @@ CI sẽ **không chỉ kiểm tra file có tồn tại** mà còn kiểm tra:
 - các mục bắt buộc trong report
 - sự hiện diện của negative tests
 - có minh chứng trong `logs/`
+- repo **không còn placeholder dạng đánh dấu chưa hoàn thiện**
+
 Vì vậy repo starter này sẽ **chưa pass CI** cho tới khi sinh viên hoàn thiện nội dung.
+
 
 ## 11. Submission contract để auto-check Q2 và Q4
 
 Để GitHub Actions kiểm tra được **Q2** và **Q4**, repo này dùng **một contract nhập/xuất thống nhất**.
 Sinh viên cần sửa `des.cpp` để chương trình nhận dữ liệu từ **stdin** theo đúng thứ tự sau:
+
+```text
 Chọn mode:
 1 = DES encrypt
 2 = DES decrypt
 3 = TripleDES encrypt
 4 = TripleDES decrypt
+```
 
 ### Mode 1: DES encrypt 
 Nhập lần lượt:
@@ -150,7 +170,6 @@ Nhập lần lượt:
 1. `2`
 2. ciphertext nhị phân
 3. key 64-bit
-
 Yêu cầu:
 - giải mã DES theo round keys đảo ngược
 - in ra plaintext cuối cùng
