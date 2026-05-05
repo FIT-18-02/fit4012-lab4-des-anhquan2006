@@ -3,7 +3,7 @@
 ## Mục tiêu
 Mục tiêu của bài lab này là tìm hiểu và trực tiếp thực thi thuật toán mã hóa khối chuẩn DES (Data Encryption Standard) và biến thể an toàn hơn là TripleDES. Qua đó, sinh viên nắm vững cấu trúc mạng Feistel, các bước hoán vị, thay thế (S-box), cơ chế quản lý khóa vòng, cũng như cách xử lý dữ liệu thực tế thông qua kỹ thuật Padding và mã hóa đa khối (Multi-block).
 ## Cách làm / Method
-
+//hi
 Em đã thực hiện các thay đổi và bổ sung quan trọng sau trên nền tảng code gốc:
 
 Cấu trúc lại mã nguồn: Chia chương trình thành các Class chuyên biệt như KeyGenerator (quản lý tạo 16 khóa vòng) và DES (xử lý cốt lõi thuật toán).
