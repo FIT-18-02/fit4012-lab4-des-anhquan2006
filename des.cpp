@@ -6,26 +6,6 @@
 
 using namespace std;
 
-// --- CHUYỂN ĐỔI HEX - BINARY ---
-string hexToBin(string hex) {
-    string bin = "";
-    for (char c : hex) {
-        int n = (c >= '0' && c <= '9') ? c - '0' : (toupper(c) - 'A' + 10);
-        bin += bitset<4>(n).to_string();
-    }
-    return bin;
-}
-
-string binToHex(string bin) {
-    string hex = "";
-    for (size_t i = 0; i < bin.length(); i += 4) {
-        int n = stoi(bin.substr(i, 4), nullptr, 2);
-        if (n < 10) hex += (char)(n + '0');
-        else hex += (char)(n - 10 + 'A');
-    }
-    return hex;
-}
-
 // XOR strings
 string xor_strings(string a, string b) {
     string res = "";
@@ -34,7 +14,7 @@ string xor_strings(string a, string b) {
     return res;
 }
 
-// --- CÁC BẢNG HOÁN VỊ (Giữ nguyên như đề bài của bạn) ---
+// --- CÁC BẢNG HOÁN VỊ ---
 int IP[64] = {58,50,42,34,26,18,10,2,60,52,44,36,28,20,12,4,62,54,46,38,30,22,14,6,64,56,48,40,32,24,16,8,57,49,41,33,25,17,9,1,59,51,43,35,27,19,11,3,61,53,45,37,29,21,13,5,63,55,47,39,31,23,15,7};
 int FP[64] = {40,8,48,16,56,24,64,32,39,7,47,15,55,23,63,31,38,6,46,14,54,22,62,30,37,5,45,13,53,21,61,29,36,4,44,12,52,20,60,28,35,3,43,11,51,19,59,27,34,2,42,10,50,18,58,26,33,1,41,9,49,17,57,25};
 int E[48] = {32,1,2,3,4,5,4,5,6,7,8,9,8,9,10,11,12,13,12,13,14,15,16,17,16,17,18,19,20,21,20,21,22,23,24,25,24,25,26,27,28,29,28,29,30,31,32,1};
@@ -60,7 +40,6 @@ vector<string> generate_keys(string key) {
     vector<string> round_keys;
     key = permute(key, PC1, 56);
     string left = key.substr(0, 28), right = key.substr(28, 28);
-
     for (int i = 0; i < 16; i++) {
         left = shift_left(left, shift_table[i]);
         right = shift_left(right, shift_table[i]);
@@ -82,14 +61,11 @@ string sbox(string in) {
     return out;
 }
 
-// DES Core
 string des_unit(string block, string key, bool encrypt) {
     vector<string> keys = generate_keys(key);
     if (!encrypt) reverse(keys.begin(), keys.end());
-
     block = permute(block, IP, 64);
     string left = block.substr(0, 32), right = block.substr(32, 32);
-
     for (int i = 0; i < 16; i++) {
         string right_expanded = permute(right, E, 48);
         string x = xor_strings(right_expanded, keys[i]);
@@ -99,7 +75,6 @@ string des_unit(string block, string key, bool encrypt) {
         left = right;
         right = next_right;
     }
-
     string combined = right + left;
     return permute(combined, FP, 64);
 }
@@ -109,40 +84,39 @@ int main() {
     cin.tie(nullptr);
 
     int mode;
-    string hexData, h1, h2, h3;
+    string binData, b1, b2, b3;
 
-    if (!(cin >> mode >> hexData)) return 0;
+    // NHẬP THEO CONTRACT: Mode -> Data -> Key(s)
+    if (!(cin >> mode >> binData)) return 0;
 
-    string binData = hexToBin(hexData);
-    // Padding to 64-bit blocks
-    while (binData.length() % 64 != 0) binData += "0000"; 
+    // Zero Padding khối 64-bit chuẩn nhị phân
+    while (binData.length() % 64 != 0) binData += "0"; 
 
     if (mode == 1 || mode == 2) {
-        cin >> h1;
-        string key1 = hexToBin(h1);
+        cin >> b1; // Key 64-bit nhị phân
         string resBin = "";
         for (size_t i = 0; i < binData.length(); i += 64) {
-            resBin += des_unit(binData.substr(i, 64), key1, (mode == 1));
+            resBin += des_unit(binData.substr(i, 64), b1, (mode == 1));
         }
-        cout << binToHex(resBin) << endl;
+        // CHỈ IN RA CHUỖI NHỊ PHÂN
+        cout << resBin << endl;
     } 
     else if (mode == 3 || mode == 4) {
-        cin >> h1 >> h2 >> h3;
-        string k1 = hexToBin(h1), k2 = hexToBin(h2), k3 = hexToBin(h3);
+        cin >> b1 >> b2 >> b3;
         string resBin = "";
         for (size_t i = 0; i < binData.length(); i += 64) {
             string block = binData.substr(i, 64);
-            if (mode == 3) { // TripleDES Encrypt: E(k1) -> D(k2) -> E(k3)
-                string t = des_unit(block, k1, true);
-                t = des_unit(t, k2, false);
-                resBin += des_unit(t, k3, true);
-            } else { // TripleDES Decrypt: D(k3) -> E(k2) -> D(k1)
-                string t = des_unit(block, k3, false);
-                t = des_unit(t, k2, true);
-                resBin += des_unit(t, k1, false);
+            if (mode == 3) { // 3DES Encrypt: E(k3, D(k2, E(k1, P)))
+                string t = des_unit(block, b1, true);
+                t = des_unit(t, b2, false);
+                resBin += des_unit(t, b3, true);
+            } else { // 3DES Decrypt ngược lại
+                string t = des_unit(block, b3, false);
+                t = des_unit(t, b2, true);
+                resBin += des_unit(t, b1, false);
             }
         }
-        cout << binToHex(resBin) << endl;
+        cout << resBin << endl;
     }
 
     return 0;
