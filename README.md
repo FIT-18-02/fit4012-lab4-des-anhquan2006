@@ -209,4 +209,4 @@ Ngoài checklist nộp bài, CI hiện còn kiểm tra tự động:
 - chương trình thực sự nhận plaintext/key từ bàn phím và mã hóa multi-block với zero padding đúng.
 - chương trình thực sự mã hóa và giải mã TripleDES đúng theo vector kiểm thử.
 
-Nói cách khác, nếu sinh viên chỉ sửa README/tests cho đủ hình thức mà **không làm Q2 hoặc Q4**, CI sẽ vẫn fail.
+Nói cách khác, nếu sinh viên chỉ sửa README/tests cho đủ hình thức mà **không làm Q2 hoặc Q4**, CI sẽ vẫn fail. hi
