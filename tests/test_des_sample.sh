@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Test case cho trường hợp DES mẫu
 set -euo pipefail
-
+//hi
 echo "Running DES sample test..."
 
 # Kiểm tra xem file thực thi des đã tồn tại chưa, nếu chưa thì biên dịch
