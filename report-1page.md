@@ -16,7 +16,15 @@ Em đã thực hiện các thay đổi và bổ sung quan trọng sau trên nề
 
 ## Kết quả / Result
 
-Chương trình đã vượt qua các bài kiểm tra tự động với kết quả chính xác. Ví dụ với input `0123456789ABCDEF` và key `133457799BBCDFF1`, kết quả ciphertext thu được là `85E813540F0AB405`, đảm bảo tính đúng đắn của thuật toán mã hóa và giải mã (round-trip).
+Chương trình đã vượt qua các bài kiểm tra quan trọng:
+
+Mã hóa DES: Chạy đúng với các Test Vector chuẩn, kết quả đầu ra là chuỗi nhị phân khớp với tài liệu kỹ thuật của NIST.
+
+Giải mã (Round-trip): Thực hiện mã hóa một chuỗi bit bất kỳ, sau đó dùng kết quả đó để giải mã với cùng khóa, kết quả thu được khớp hoàn toàn với bản rõ ban đầu.
+
+TripleDES: Kiểm tra thành công với 3 khóa khác nhau, đảm bảo tính đúng đắn của quy trình EDE.
+
+Negative Tests: Khi cố tình nhập sai khóa hoặc thay đổi dù chỉ 1 bit trong ciphertext (tamper), chương trình giải mã ra kết quả hoàn toàn khác biệt, chứng minh tính toàn vẹn của thuật toán.
 
 ## Kết luận / Conclusion
 
