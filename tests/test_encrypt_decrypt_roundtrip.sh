@@ -3,7 +3,7 @@
 set -euo pipefail
 
 echo "Running Round-trip test (Encrypt -> Decrypt)..."
-
+//hi
 # Đảm bảo đã có file thực thi
 if [ ! -f "./des" ]; then
     make || g++ -std=c++17 des.cpp -o des
