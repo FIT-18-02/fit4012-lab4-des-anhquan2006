@@ -3,7 +3,7 @@ set -euo pipefail
 
 # Dữ liệu mong đợi (Chuỗi Hex sau khi mã hóa mẫu 1 block)
 EXPECTED="85E813540F0AB405"
-
+//hi
 # Biên dịch chương trình des.cpp
 g++ -std=c++17 -Wall -Wextra -pedantic des.cpp -o des_test
 
