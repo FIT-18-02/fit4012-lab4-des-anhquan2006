@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # Test case kiểm tra tính năng Multi-block và Zero Padding
 set -euo pipefail
-
+//hi
 echo "Running Multi-block and Padding test..."
 
 # Đảm bảo đã có file thực thi
