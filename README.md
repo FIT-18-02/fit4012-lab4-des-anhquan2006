@@ -56,55 +56,46 @@ cmake --build build
 ```
 
 ## 3. Input / Đầu vào
+Chế độ (Mode): Nhập một số nguyên từ 1 đến 4 để chọn thuật toán (DES Enc/Dec, TripleDES Enc/Dec).
 
-TODO_STUDENT: Mô tả rõ đầu vào của chương trình sau khi em hoàn thiện bài lab.
+Dữ liệu (Plaintext/Ciphertext): Nhập dưới dạng chuỗi bit nhị phân (chỉ gồm ký tự '0' và '1').
 
-Gợi ý nên nêu:
-- plaintext đang được nhập như thế nào
-- key đang được nhập như thế nào
-- chương trình nhận 1 block hay nhiều block
-- định dạng dữ liệu là chuỗi bit, chuỗi ký tự hay file
+Khóa (Key): Nhập chuỗi bit nhị phân 64-bit (cho DES) hoặc ba chuỗi 64-bit (cho TripleDES).
 
+Số lượng block: Chương trình hỗ trợ nhập chuỗi có độ dài bất kỳ (multi-block).
 ## 4. Output / Đầu ra
+Kết quả cuối cùng: Một chuỗi nhị phân dài duy nhất đại diện cho kết quả mã hóa hoặc giải mã.
 
-TODO_STUDENT: Mô tả rõ đầu ra của chương trình.
+Thông tin bổ sung: Chương trình in ra các khóa vòng (Round Keys) trong quá trình xử lý để hỗ trợ việc kiểm chứng từng bước của thuật toán.
 
-Gợi ý nên nêu:
-- ciphertext hiển thị ra sao
-- có in round keys hay không
-- có hỗ trợ giải mã hay không
-- với TripleDES thì đầu ra gồm những gì
-
+TripleDES: Đầu ra là kết quả của quy trình mã hóa/giải mã Triple-DES theo mô hình EDE (Encrypt-Decrypt-Encrypt).
 ## 5. Padding đang dùng
+Chương trình sử dụng cơ chế Zero Padding:
 
-TODO_STUDENT: Giải thích cơ chế padding em dùng.
+Cơ chế: Nếu độ dài của chuỗi đầu vào không chia hết cho 64 bit, chương trình sẽ tự động thêm các ký tự '0' vào cuối block cuối cùng cho đến khi đủ 64 bit.
 
-Gợi ý:
-- nếu plaintext dài hơn 64 bit thì chia block như thế nào
-- nếu thiếu bit thì pad bằng `0` ra sao
-- hạn chế của zero padding là gì
-- vì sao cách này chỉ phù hợp cho bài học nhập môn, không phải thiết kế an toàn hoàn chỉnh trong thực tế
+Chia block: Sau khi padding, toàn bộ chuỗi được chia thành các khối 64-bit độc lập để xử lý tuần tự.
 
+Hạn chế: Zero Padding có thể gây nhầm lẫn nếu dữ liệu gốc ban đầu kết thúc bằng các bit 0. Đây là cơ chế đơn giản phục vụ mục đích học tập, không an toàn bằng các chuẩn như PKCS#7 trong thực tế.
 ## 6. Tests bắt buộc
+test_des_sample.sh: Kiểm tra với vector thử chuẩn.
 
-Repo này đã tạo sẵn **5 tên file test mẫu** để sinh viên điền nội dung:
+test_encrypt_decrypt_roundtrip.sh: Kiểm tra khả năng mã hóa rồi giải mã ngược lại.
 
-- `tests/test_des_sample.sh`
-- `tests/test_encrypt_decrypt_roundtrip.sh`
-- `tests/test_multiblock_padding.sh`
-- `tests/test_tamper_negative.sh`
-- `tests/test_wrong_key_negative.sh`
+test_multiblock_padding.sh: Kiểm tra dữ liệu dài và cơ chế bù bit 0.
+
+test_tamper_negative.sh: Kiểm tra khi ciphertext bị thay đổi.
+
+test_wrong_key_negative.sh: Kiểm tra khi dùng sai khóa để giải mã.
 
 Sinh viên phải tự hoàn thiện test và bổ sung minh chứng chạy.
 
 ## 7. Logs / Minh chứng
+Các tệp trong thư mục logs/ chứa:
 
-Thư mục `logs/` dùng để nộp minh chứng, ví dụ:
-- ảnh chụp màn hình khi chạy chương trình
-- output của test
-- log thử đúng / sai key / tamper
-- log cho mã hóa nhiều block
+run_log.txt: Nhật ký chạy thử chương trình với các bộ dữ liệu khác nhau.
 
+Ảnh chụp màn hình kết quả chạy trên terminal thành công.
 ## 8. Ethics & Safe use
 
 - Chỉ chạy và kiểm thử trên dữ liệu học tập hoặc dữ liệu giả lập.
@@ -123,7 +114,6 @@ Trước khi nộp, cần có:
 - `tests/` với ít nhất 5 test
 - có negative test cho `tamper` và `wrong key`
 - `logs/` có ít nhất 1 file minh chứng thật
-- không còn dòng `TODO_STUDENT`
 
 ## 10. Lưu ý về CI
 
@@ -132,23 +122,17 @@ CI sẽ **không chỉ kiểm tra file có tồn tại** mà còn kiểm tra:
 - các mục bắt buộc trong report
 - sự hiện diện của negative tests
 - có minh chứng trong `logs/`
-- repo **không còn placeholder `TODO_STUDENT`**
-
 Vì vậy repo starter này sẽ **chưa pass CI** cho tới khi sinh viên hoàn thiện nội dung.
-
 
 ## 11. Submission contract để auto-check Q2 và Q4
 
 Để GitHub Actions kiểm tra được **Q2** và **Q4**, repo này dùng **một contract nhập/xuất thống nhất**.
 Sinh viên cần sửa `des.cpp` để chương trình nhận dữ liệu từ **stdin** theo đúng thứ tự sau:
-
-```text
 Chọn mode:
 1 = DES encrypt
 2 = DES decrypt
 3 = TripleDES encrypt
 4 = TripleDES decrypt
-```
 
 ### Mode 1: DES encrypt 
 Nhập lần lượt:
