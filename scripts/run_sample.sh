@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-# Di chuyển lên một cấp để tìm thấy des.cpp hoặc chỉ định đường dẫn cụ thể
+# Biên dịch des.cpp nằm ở thư mục cha
 g++ -std=c++17 -Wall -Wextra -pedantic ../des.cpp -o des
+
+# Chạy file thực thi vừa biên dịch
 ./des
