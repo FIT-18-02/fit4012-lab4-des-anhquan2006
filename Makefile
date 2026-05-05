@@ -13,9 +13,13 @@ $(TARGET): $(SRC)
 run: $(TARGET)
 	./$(TARGET)
 
+# Sửa lại phần test để chạy toàn bộ các bài kiểm tra trong thư mục tests
 test: $(TARGET)
-	bash tests/test_sample.sh
+	@for file in tests/*.sh; do \
+		echo "Running $$file..."; \
+		bash $$file; \
+	done
 
 clean:
 	rm -f $(TARGET)
-	rm -rf build
+	rm -rf build logs/*.log
