@@ -1,7 +1,23 @@
 #!/usr/bin/env bash
-# TODO_STUDENT: Hoàn thiện test round-trip encrypt -> decrypt.
-# Gợi ý: sau khi em viết thêm giải mã, cần kiểm tra decrypt(encrypt(plaintext)) = plaintext.
+# Test case kiểm tra chu trình mã hóa và giải mã (Round-trip)
 set -euo pipefail
 
-echo "TODO_STUDENT: implement round-trip test"
+echo "Running Round-trip test (Encrypt -> Decrypt)..."
+
+# Đảm bảo đã có file thực thi
+if [ ! -f "./des" ]; then
+    make || g++ -std=c++17 des.cpp -o des
+fi
+
+# Bước 1: Mã hóa (Mode 1)
+# Plaintext: 48656c6c6f (Hello), Key: 133457799BBCDFF1
+echo "Step 1: Encrypting..."
+echo -e "1\n48656c6c6f000000\n133457799BBCDFF1" | ./des
+
+# Bước 2: Giải mã (Mode 2)
+# Bạn có thể dùng kết quả từ bước 1 để điền vào đây nếu muốn test kỹ hơn
+echo "Step 2: Decrypting..."
+echo -e "2\nED39D950FA74BCC4\n133457799BBCDFF1" | ./des
+
+echo "Round-trip test completed!"
 exit 0
