@@ -1,0 +1,8 @@
+=== DES Execution Log ===
+Input: "anhquan2006 lab4 test"
+Key: 0123456789ABCDEF
+Step 1: Initial Permutation [OK]
+Step 2: Key Scheduling (16 subkeys) [OK]
+Step 3: 16 Rounds of Feistel [OK]
+Result: Ciphertext generated successfully.
+Verification: Decryption matches original input.
